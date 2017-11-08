@@ -20,9 +20,7 @@ export default {
   name: 'HelloWorld',
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App',
-      planets: [],
-      selectedPlanets: []
+      planets: []    
     }
   },
   methods: {
@@ -39,15 +37,16 @@ export default {
     changeselection(index, planet){
 
       console.log('reached');
+      console.log(this.$store);
 
       if(planet.selected){
         planet.selected = false;
-        this.selectedPlanets.pop(planet);
+        this.$store.commit('removePlanet', planet);
         this.$set(this.planets, index, planet);  
       }
-      else if(this.selectedPlanets.length < 4){
+      else if(this.$store.getters.selectedPlanets.length < 4){
         planet.selected = true;
-        this.selectedPlanets.push(planet);
+        this.$store.commit('addPlanet', planet);
         this.$set(this.planets, index, planet);  
       }
     }
