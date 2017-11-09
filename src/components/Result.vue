@@ -24,6 +24,11 @@ export default {
     return {
       msg: 'Welcome to Your Vue.js App'
     }
+  },
+  created: function(){
+    if(this.$store.getters.selectedPlanets.length == 0){
+      this.$router.push('/') ;
+    }
   }
 }
 </script>

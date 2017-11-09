@@ -121,6 +121,9 @@ export default {
     }
   },
   created: function () {
+    if(this.selectedPlanets.length == 0){
+      this.$router.push('/') ;
+    }
     this.fetchVehicles();
     this.getToken();
   }
