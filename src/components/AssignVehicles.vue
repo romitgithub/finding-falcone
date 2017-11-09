@@ -7,7 +7,7 @@
 
     <div class='planetslist'>
       <div class='planet' v-for="(planet, index1) in this.$store.getters.selectedPlanets">
-        <img v-bind:src="imagePath(index1)" />
+        <img v-bind:src="imagePath(planet.name)" />
         <h3> {{ planet.name }} </h3>
         <p> <b>Distance</b> - {{ planet.distance }} megamiles </p>
 
@@ -44,8 +44,7 @@ export default {
   },
   methods: {
     imagePath: function (index) {
-      index++;
-      return require('@/assets/planets/0' + index + '.png')
+      return require('@/assets/planets/' + index + '.png')
     },
     getJsonObject(){
       var json = {};

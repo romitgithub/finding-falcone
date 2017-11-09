@@ -5,12 +5,12 @@
     <div class='planetslist'>
       <div class='planet' v-for="(planet, index) in planets" v-on:click="changeselection(index, planet)">
         <div class='selected' v-if=planet.selected> <p>selected</p> </div>
-        <img v-bind:src="imagePath(index)" />
+        <img v-bind:src="imagePath(planet.name)" />
         <h3> {{ planet.name }} </h3>
         <p> <b>Distance</b> - {{ planet.distance }} megamiles </p>
       </div>
     </div>
-    <router-link to="/assignvehicles" class='start-button' v-if='this.$store.getters.selectedPlanets.length != 0'>Now select vehicles to send to these planets</router-link>
+    <router-link to="/assignvehicles" class='start-button' v-if='this.$store.getters.selectedPlanets.length == 4'>Now select vehicles to send to these planets</router-link>
 
   </div>
 </template>
@@ -25,8 +25,7 @@ export default {
   },
   methods: {
     imagePath: function (index) {
-      index++;
-      return require('@/assets/planets/0' + index + '.png')
+      return require('@/assets/planets/' + index + '.png')
     },
     fetchPlanets(){
       this.$http.get('planets')
