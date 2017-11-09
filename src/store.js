@@ -11,11 +11,11 @@ export const store = new Vuex.Store({
     	selectedPlanets: state => state.selectedPlanets
 	},
 	mutations: {
-		addPlanet(planet){
-			this.state.selectedPlanets.push(planet);
+		addPlanet(state, planet){
+			state.selectedPlanets.push(planet);
 		},
-		removePlanet(planet){
-			this.state.selectedPlanets.pop(planet);
+		removePlanet(state, planet){
+			state.selectedPlanets.pop(planet);
 		}
 	}
 })

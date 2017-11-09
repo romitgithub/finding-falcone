@@ -12,6 +12,8 @@
       </div>
     </div>
 
+    <router-link to="/assignvehicles" class='start-button' v-if='this.$store.getters.selectedPlanets.length != 0'>Now select vehicles to send to these planets</router-link>
+
   </div>
 </template>
 
@@ -35,9 +37,6 @@ export default {
       });
     },
     changeselection(index, planet){
-
-      console.log('reached');
-      console.log(this.$store);
 
       if(planet.selected){
         planet.selected = false;
@@ -117,6 +116,15 @@ export default {
     text-transform: uppercase;
     font-weight: bold;
     color: white;
+  }
+
+  .start-button{
+    top: 40px;
+    padding: 12px 30px 12px 30px;
+    text-decoration: none;
+    background: #2196F3;
+    color: white;
+    border-radius: 30px;
   }
 
 </style>
