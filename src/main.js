@@ -13,6 +13,12 @@ Vue.use(VueResource);
 Vue.config.productionTip = false
 Vue.http.options.root = "https://findfalcone.herokuapp.com/";
 
+Vue.http.interceptors.push((request, next) => {
+  request.headers.set('Accept', 'application/json'),
+  request.headers.set('Content-Type', 'application/json')
+  next()
+})
+
 /* eslint-disable no-new */
 
 new Vue({

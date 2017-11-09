@@ -17,6 +17,9 @@ export default {
     return {
       msg: 'Welcome to Your Vue.js App'
     }
+  },
+  created: function () {
+    this.$store.commit('resetAll');
   }
 }
 </script>

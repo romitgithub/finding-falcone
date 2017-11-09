@@ -4,6 +4,7 @@ import HelloWorld from '@/components/HelloWorld'
 import Home from '@/components/Home'
 import FindFalcone from '@/components/FindFalcone'
 import AssignVehicles from '@/components/AssignVehicles'
+import Result from '@/components/Result'
 
 Vue.use(Router)
 
@@ -23,6 +24,11 @@ export default new Router({
     	path: '/assignvehicles',
     	name: 'AssignVehicles',
     	component: AssignVehicles
+    },
+    {
+    	path: '/result',
+    	name: 'Result',
+    	component: Result
     }
   ]
 })

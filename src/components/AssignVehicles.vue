@@ -2,6 +2,9 @@
   <div>
     <h2 class='title'> Assign vehicles to your planets </h2>
 
+    <p v-if='totalTime != 0'> Total time to reach all the planets : {{ totalTime }} </p>
+
+
     <div class='planetslist'>
       <div class='planet' v-for="(planet, index1) in this.$store.getters.selectedPlanets">
         <img v-bind:src="imagePath(index1)" />
@@ -12,7 +15,7 @@
 
           <p><b>Assign vehicle</b></p>
 
-          <div v-for="(vehicle, index2) in vehicles" class='vehicle' v-on:click="assignVehicle(index2, index1, vehicle)">
+          <div v-for="(vehicle, index2) in vehicles" class='vehicle' v-on:click="assignVehicle(index2, index1, vehicle)" v-if='planet.distance <= vehicle.max_distance'>
             <div></div>
             <span>{{ vehicle.name }}</span>
             <img src='../assets/tick.png' v-if='vehicle == planet.vehicle'/>
@@ -22,6 +25,8 @@
 
       </div>
     </div>
+
+    <p class='start-button' v-on:click='findFalcone()' v-if='this.selectedPlanets.length == this.assignedVehicles.length'>Find Falcone</p>
 
   </div>
 </template>
@@ -33,7 +38,8 @@ export default {
     return {
       selectedPlanets: this.$store.getters.selectedPlanets,
       vehicles: [],
-      assignedVehicles: []  
+      assignedVehicles: [],
+      totalTime: 0  
     }
   },
   methods: {
@@ -41,10 +47,48 @@ export default {
       index++;
       return require('@/assets/planets/0' + index + '.png')
     },
+    getJsonObject(){
+      var json = {};
+      
+      json.token = this.$store.getters.token;
+      json.planet_names = [];
+      json.vehicle_names = [];
+
+      for(var planet of this.selectedPlanets){
+        json.planet_names.push(planet.name);
+        json.vehicle_names.push(planet.vehicle.name);
+      }
+
+      return json;
+    },
     fetchVehicles(){
       this.$http.get('vehicles')
       .then(response => {
         this.vehicles = response.data;
+      });
+    },
+    getToken(){
+      this.$http.post('token')
+      .then(response => {
+        this.$store.commit('updateToken', response.data.token);
+      }, {'Accept': 'application/json'});
+    },
+    findFalcone(){
+      this.$http.post('find', this.getJsonObject())
+      .then(response => {
+        if(response.data.status == 'success'){
+          this.$store.commit('updateSearchResult', response.data);
+          this.$store.commit('updateTimeTaken', this.totalTime);
+          this.$router.push('Result') ;
+        }
+        else if(response.data.status == 'false'){
+          console.log('failed to find Al falcone');
+          this.$store.commit('updateSearchResult', response.data);
+          this.$router.push('Result') ;
+        }
+        else{
+          console.log(response.data.error);
+        }
       });
     },
     findOccurences(dataset, search){
@@ -56,7 +100,6 @@ export default {
     assignVehicle(vehicleIndex, planetIndex, vehicleObj){
 
       var planet = this.selectedPlanets[planetIndex];
-      console.log(planet);
 
       if(this.findOccurences(this.assignedVehicles, vehicleObj) < vehicleObj.total_no){
         if(planet.vehicle !== undefined){
@@ -66,10 +109,21 @@ export default {
         this.$set(this.selectedPlanets, planetIndex, planet);  
         this.assignedVehicles.push(vehicleObj);
       }
+
+      this.updateTotalTimeToReachAlFalcone();
+    },
+    updateTotalTimeToReachAlFalcone(){
+      this.totalTime = 0;
+      for(var planet of this.selectedPlanets){
+        if(planet.vehicle != undefined){
+          this.totalTime = this.totalTime + (planet.distance/planet.vehicle.speed);
+        }
+      }
     }
   },
   created: function () {
     this.fetchVehicles();
+    this.getToken();
   }
 }
 </script>
@@ -92,6 +146,7 @@ export default {
     margin:16px;
     padding: 20px;
     background: white;
+    vertical-align: top;
     border-radius: 8px;
     box-shadow: 0 4px 8px #211a1a;
   }
@@ -163,12 +218,14 @@ export default {
   }
 
   .start-button{
+    display: inline-block;
     top: 40px;
     padding: 12px 30px 12px 30px;
     text-decoration: none;
     background: #2196F3;
     color: white;
     border-radius: 30px;
+    cursor: pointer;
   }
 
   .vehicle img{

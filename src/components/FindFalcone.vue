@@ -2,7 +2,6 @@
   <div>
     <h2 class='title'> Select planets you want to search in: </h2>
     <p> You can only choose 4 planets </p>
-
     <div class='planetslist'>
       <div class='planet' v-for="(planet, index) in planets" v-on:click="changeselection(index, planet)">
         <div class='selected' v-if=planet.selected> <p>selected</p> </div>
@@ -11,7 +10,6 @@
         <p> <b>Distance</b> - {{ planet.distance }} megamiles </p>
       </div>
     </div>
-
     <router-link to="/assignvehicles" class='start-button' v-if='this.$store.getters.selectedPlanets.length != 0'>Now select vehicles to send to these planets</router-link>
 
   </div>
@@ -52,6 +50,7 @@ export default {
   },
   created: function () {
     this.fetchPlanets();
+    this.$store.commit('resetAll');
   }
 }
 </script>
